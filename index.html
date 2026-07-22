@@ -1,0 +1,527 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+<link rel="icon" type="image/png" href="favicon.png">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Registration Number Generator</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: Arial, sans-serif;
+        }
+
+        body {
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background: linear-gradient(135deg, #0f172a, #1e293b);
+            padding: 20px;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 550px;
+            background: #ffffff;
+            padding: 35px;
+            border-radius: 20px;
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.3);
+        }
+
+        h1 {
+            text-align: center;
+            color: #0f172a;
+            margin-bottom: 10px;
+        }
+
+        .subtitle {
+            text-align: center;
+            color: #64748b;
+            margin-bottom: 30px;
+        }
+
+        label {
+            display: block;
+            margin: 15px 0 7px;
+            font-weight: bold;
+            color: #334155;
+        }
+
+        input {
+            width: 100%;
+            padding: 13px;
+            border: 2px solid #cbd5e1;
+            border-radius: 10px;
+            font-size: 16px;
+            outline: none;
+        }
+
+        input:focus {
+            border-color: #2563eb;
+        }
+
+        button {
+            width: 100%;
+            margin-top: 25px;
+            padding: 14px;
+            border: none;
+            border-radius: 10px;
+            background: #2563eb;
+            color: white;
+            font-size: 17px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+
+        button:hover {
+            background: #1d4ed8;
+            transform: translateY(-1px);
+        }
+
+        .result-box {
+            margin-top: 25px;
+            padding: 20px;
+            background: #f1f5f9;
+            border-radius: 12px;
+            text-align: center;
+            display: none;
+        }
+
+        .result-title {
+            color: #475569;
+            margin-bottom: 10px;
+        }
+
+        #registrationNumber {
+            font-size: 22px;
+            font-weight: bold;
+            color: #16a34a;
+            word-break: break-all;
+            user-select: all;
+        }
+
+        .copy-btn {
+            background: #16a34a;
+            margin-top: 15px;
+        }
+
+        .copy-btn:hover {
+            background: #15803d;
+        }
+
+        .error {
+            color: #dc2626;
+            margin-top: 10px;
+            font-size: 14px;
+            display: none;
+            font-weight: bold;
+        }
+
+        .format {
+            margin-top: 20px;
+            padding: 12px;
+            background: #eff6ff;
+            border-radius: 8px;
+            text-align: center;
+            color: #1e40af;
+            font-size: 14px;
+            word-break: break-word;
+        }
+
+        .success-message {
+            color: #16a34a;
+            font-size: 14px;
+            font-weight: bold;
+            margin-top: 10px;
+            display: none;
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="container">
+
+    <h1>Cyber Security Course</h1>
+
+    <p class="subtitle">
+        Registration Number Generator
+    </p>
+
+
+    <!-- YEAR -->
+    <label for="year">Year</label>
+
+    <input
+        type="number"
+        id="year"
+        placeholder="Example: 2026"
+        min="2000"
+        max="9999"
+    >
+
+
+    <!-- BATCH -->
+    <label for="batch">Batch Code</label>
+
+    <input
+        type="text"
+        id="batch"
+        placeholder="Example: ABC"
+        maxlength="4"
+        oninput="this.value = this.value
+        .toUpperCase()
+        .replace(/[^A-Z]/g, '')"
+    >
+
+
+    <!-- STUDENT SERIAL -->
+    <label for="serial">Student Serial</label>
+
+    <input
+        type="number"
+        id="serial"
+        placeholder="Example: 1"
+        min="1"
+        max="99999999"
+    >
+
+
+    <!-- ERROR -->
+    <p class="error" id="errorMessage"></p>
+
+
+    <!-- GENERATE BUTTON -->
+    <button onclick="generateRegistration()">
+        Generate Registration Number
+    </button>
+
+
+    <!-- RESULT -->
+    <div class="result-box" id="resultBox">
+
+        <div class="result-title">
+            Your Registration Number
+        </div>
+
+        <div id="registrationNumber"></div>
+
+        <!-- COPY BUTTON -->
+        <button
+            class="copy-btn"
+            onclick="copyRegistration()"
+        >
+            Copy Registration Number
+        </button>
+
+        <!-- SUCCESS MESSAGE -->
+        <div
+            class="success-message"
+            id="successMessage"
+        >
+            ✓ Registration Number Copied!
+        </div>
+
+    </div>
+
+
+    <!-- FORMAT -->
+    <div class="format">
+        Format:
+        REG-BD-OSS-CS-"Year"-"Batch"-"Student Serial"
+    </div>
+
+</div>
+
+
+<script>
+
+
+/* ================================
+   GENERATE REGISTRATION NUMBER
+================================ */
+
+function generateRegistration() {
+
+    const year =
+        document.getElementById("year").value.trim();
+
+    const batch =
+        document.getElementById("batch").value.trim();
+
+    const serial =
+        document.getElementById("serial").value.trim();
+
+
+    const error =
+        document.getElementById("errorMessage");
+
+    const resultBox =
+        document.getElementById("resultBox");
+
+    const result =
+        document.getElementById("registrationNumber");
+
+    const successMessage =
+        document.getElementById("successMessage");
+
+
+    // Hide previous messages
+
+    error.style.display = "none";
+
+    successMessage.style.display = "none";
+
+
+    /* ================================
+       YEAR VALIDATION
+    ================================= */
+
+    if (!/^\d{4}$/.test(year)) {
+
+        error.innerText =
+            "Year must be exactly 4 digits.";
+
+        error.style.display = "block";
+
+        resultBox.style.display = "none";
+
+        return;
+    }
+
+
+    /* ================================
+       BATCH VALIDATION
+    ================================= */
+
+    if (!/^[A-Z]{2,4}$/.test(batch)) {
+
+        error.innerText =
+            "Batch Code must contain only 2-4 CAPITAL letters.";
+
+        error.style.display = "block";
+
+        resultBox.style.display = "none";
+
+        return;
+    }
+
+
+    /* ================================
+       SERIAL VALIDATION
+    ================================= */
+
+    if (!/^\d{1,8}$/.test(serial)) {
+
+        error.innerText =
+            "Student Serial must be between 1-8 digits.";
+
+        error.style.display = "block";
+
+        resultBox.style.display = "none";
+
+        return;
+    }
+
+
+    /* ================================
+       FORMAT SERIAL
+       Minimum 6 Digits
+    ================================= */
+
+    const formattedSerial =
+        serial.padStart(6, "0");
+
+
+    /* ================================
+       CREATE REGISTRATION NUMBER
+    ================================= */
+
+    const regNumber =
+        `REG-BD-OSS-CS-${year}-${batch}-${formattedSerial}`;
+
+
+    /* ================================
+       SHOW RESULT
+    ================================= */
+
+    result.innerText = regNumber;
+
+    resultBox.style.display = "block";
+
+}
+
+
+/* ================================
+   COPY REGISTRATION NUMBER
+================================ */
+
+function copyRegistration() {
+
+    const regNumber =
+        document
+        .getElementById("registrationNumber")
+        .innerText
+        .trim();
+
+
+    const successMessage =
+        document.getElementById("successMessage");
+
+
+    /* ================================
+       CHECK REGISTRATION NUMBER
+    ================================= */
+
+    if (!regNumber) {
+
+        alert(
+            "No Registration Number found!"
+        );
+
+        return;
+    }
+
+
+    /* ================================
+       MODERN CLIPBOARD API
+    ================================= */
+
+    if (
+        navigator.clipboard &&
+        window.isSecureContext
+    ) {
+
+        navigator.clipboard
+        .writeText(regNumber)
+
+        .then(function () {
+
+            showCopySuccess();
+
+        })
+
+        .catch(function () {
+
+            fallbackCopy(regNumber);
+
+        });
+
+    }
+
+    /* ================================
+       FALLBACK COPY
+    ================================= */
+
+    else {
+
+        fallbackCopy(regNumber);
+
+    }
+
+}
+
+
+/* ================================
+   FALLBACK COPY METHOD
+================================ */
+
+function fallbackCopy(text) {
+
+    const textarea =
+        document.createElement("textarea");
+
+
+    textarea.value = text;
+
+
+    /* Make textarea invisible */
+
+    textarea.style.position = "fixed";
+
+    textarea.style.left = "-999999px";
+
+    textarea.style.top = "-999999px";
+
+    textarea.style.opacity = "0";
+
+
+    document.body.appendChild(textarea);
+
+
+    textarea.focus();
+
+    textarea.select();
+
+
+    try {
+
+        const successful =
+            document.execCommand("copy");
+
+
+        if (successful) {
+
+            showCopySuccess();
+
+        }
+
+        else {
+
+            alert(
+                "Copy failed. Please select and copy manually."
+            );
+
+        }
+
+    }
+
+    catch (error) {
+
+        alert(
+            "Copy failed. Please select and copy manually."
+        );
+
+    }
+
+
+    document.body.removeChild(textarea);
+
+}
+
+
+/* ================================
+   COPY SUCCESS MESSAGE
+================================ */
+
+function showCopySuccess() {
+
+    const successMessage =
+        document.getElementById("successMessage");
+
+
+    successMessage.style.display =
+        "block";
+
+
+    /* Hide message after 3 seconds */
+
+    setTimeout(function () {
+
+        successMessage.style.display =
+            "none";
+
+    }, 3000);
+
+}
+
+</script>
+
+</body>
+</html>
